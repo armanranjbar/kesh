@@ -43,6 +43,13 @@ products = {
     "apple": {"name": "سیب (1 لیتر)", "price": 2500000, "stock": 1, "delivery_days": 30}
 }
 
+# تابع برای تبدیل اعداد فارسی به انگلیسی
+def convert_persian_to_english(text):
+    persian_digits = "۰۱۲۳۴۵۶۷۸۹"
+    english_digits = "0123456789"
+    translation_table = str.maketrans(persian_digits, english_digits)
+    return text.translate(translation_table)
+
 # تنظیم منوی همیشگی
 def set_persistent_menu():
     commands = [
@@ -170,7 +177,7 @@ def remove_item(call):
     chat_id = call.message.chat.id
     try:
         item = call.data.split("_")[1]  # استخراج نام آیتم
-        if item in user_orders[chat_id]:
+        if chat_id in user_orders and item in user_orders[chat_id]:
             del user_orders[chat_id][item]  # حذف آیتم از سفارشات
             bot.answer_callback_query(call.id, f"❌ {products[item]['name']} با موفقیت حذف شد.")
             # حذف پیام قبلی
@@ -252,6 +259,9 @@ def handle_quantity(message, product_id):
     if text == "لغو":
         bot.send_message(chat_id, "❌ سفارش لغو شد.", reply_markup=main_menu())
         return
+
+    # تبدیل اعداد فارسی به انگلیسی
+    text = convert_persian_to_english(text)
 
     try:
         quantity = int(text)
