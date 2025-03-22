@@ -40,7 +40,62 @@ products = {
     "keshmesh": {"name": "کشمش", "price": 600000, "stock": 50},  # قیمت کشمش 600,000 تومان
     "raki": {"name": "راکی (1 لیتر)", "price": 3500000, "stock": 1, "delivery_days": 30},
     "banana": {"name": "موز (1 لیتر)", "price": 2500000, "stock": 1, "delivery_days": 30},
-    "apple": {"name": "سیب (1 لیتر)", "price": 2500000, "stock": 1, "delivery_days": 30}
+    "apple": {"name": "سیب (1 لیتر)", "price": 2500000, "stock": 1, "delivery_days": 30},
+    "liquor_orange": {"name": "لیکور پرتقال (1 لیتر)", "price": 800000, "stock": 1, "delivery_days": 30},
+    "liquor_cherry": {"name": "لیکور آلبالو (1 لیتر)", "price": 800000, "stock": 1, "delivery_days": 30},
+    "liquor_pineapple": {"name": "لیکور آناناس (1 لیتر)", "price": 800000, "stock": 1, "delivery_days": 30},
+}
+
+# توضیحات محصولات
+product_descriptions = {
+    "raki": {
+        "description": (
+            "🌟 **راکی (1 لیتر)** 🌟\n\n"
+            "راکی یه نوشیدنی سنتی و معطر با طعم خاص انیسونه که از تقطیر انگور و افزودن دانه‌های انیسون به دست میاد. این نوشیدنی توی آب سرد یا با یخ سرو می‌شه و رنگش به سفید شیری تغییر می‌کنه، به همین خاطر بهش 'شیر اَسد' هم می‌گن! 🦁\n"
+            "یه انتخاب عالی برای مهمونی‌ها و دورهمی‌های شماست. 😍"
+        ),
+        "image": "raki_image.jpg"
+    },
+    "banana": {
+        "description": (
+            "🍌 **ودکای موز (1 لیتر)** 🍌\n\n"
+            "ودکای موز یه نوشیدنی خاص و خوش‌طعمه که با ترکیب ودکای خالص و عصاره‌ی طبیعی موز درست می‌شه. طعم شیرین و ملایم موز توی این نوشیدنی حس تازگی و لذت رو بهتون هدیه می‌ده. 🍹\n"
+            "بهترین انتخاب برای کسایی که دنبال یه طعم جدید و متفاوتن! ✨"
+        ),
+        "image": "banana_image.jpg"
+    },
+    "apple": {
+        "description": (
+            "🍎 **ودکای سیب (1 لیتر)** 🍎\n\n"
+            "ودکای سیب با عصاره‌ی سیب‌های تازه و ودکای باکیفیت درست می‌شه. طعم ترد و ترش‌وشیرین سیب توی این نوشیدنی حس طراوت و شادابی رو بهتون می‌ده. 🍏\n"
+            "یه نوشیدنی عالی برای کسایی که عاشق طعم‌های میوه‌ای هستن! 🌟"
+        ),
+        "image": "apple_image.jpg"
+    },
+    "liquor_orange": {
+        "description": (
+            "🍊 **لیکور پرتقال (1 لیتر)** 🍊\n\n"
+            "لیکور پرتقال از پوست پرتقال‌های تازه و شیرین به همراه الکل خالص درست می‌شه. طعم شیرین و مرکباتی این لیکور باعث می‌شه که هم به‌تنهایی و هم توی کوکتل‌ها عالی باشه. 🍹\n"
+            "یه انتخاب فوق‌العاده برای کسایی که عاشق طعم‌های ترش و شیرینن! ✨"
+        ),
+        "image": "liquor_orange_image.jpg"
+    },
+    "liquor_cherry": {
+        "description": (
+            "🍒 **لیکور آلبالو (1 لیتر)** 🍒\n\n"
+            "لیکور آلبالو با استفاده از آلبالوهای تازه و رسیده درست می‌شه که طعم ترش و شیرینش حس نوستالژی رو زنده می‌کنه. این نوشیدنی با الکل ملایم و طعم غلیظ آلبالو، یه انتخاب عالی برای دورهمی‌هاست. 🥂\n"
+            "یه طعم کلاسیک که نمی‌تونی ازش بگذری! 😋"
+        ),
+        "image": "liquor_cherry_image.jpg"
+    },
+    "liquor_pineapple": {
+        "description": (
+            "🍍 **لیکور آناناس (1 لیتر)** 🍍\n\n"
+            "لیکور آناناس با عصاره‌ی آناناس‌های استوایی و شیرین درست می‌شه. طعم شیرین و گرمسیری این نوشیدنی حس یه تعطیلات ساحلی رو بهتون می‌ده. 🏝️\n"
+            "یه نوشیدنی شاد و پرانرژی برای کسایی که دنبال طعم‌های خاصن! 🌺"
+        ),
+        "image": "liquor_pineapple_image.jpg"
+    }
 }
 
 # تابع برای تبدیل اعداد فارسی به انگلیسی
@@ -81,14 +136,15 @@ def main_menu():
     btn2 = InlineKeyboardButton("📦 سفارش محصول خاص", callback_data="order_specific")
     btn3 = InlineKeyboardButton("📝 ویرایش سفارش", callback_data="edit_order")
     btn4 = InlineKeyboardButton("💳 نهایی کردن سفارش", callback_data="finalize_order")
-    markup.add(btn1, btn2, btn3, btn4)
+    btn5 = InlineKeyboardButton("📖 توضیحات محصولات", callback_data="show_descriptions")
+    markup.add(btn1, btn2, btn3, btn4, btn5)
     return markup
 
 # منوی محصولات
 def products_menu():
     markup = InlineKeyboardMarkup(row_width=1)
     for product_id, product in products.items():
-        if product_id not in ["raki", "banana", "apple"]:  # محصولات خاص رو اینجا نشون نمی‌دیم
+        if product_id not in ["raki", "banana", "apple", "liquor_orange", "liquor_cherry", "liquor_pineapple"]:  # محصولات خاص رو اینجا نشون نمی‌دیم
             markup.add(InlineKeyboardButton(f"🌿 {product['name']} - {product['price']:,} تومان (موجودی انبار: {product['stock']})", callback_data=f"select_{product_id}"))
     markup.add(InlineKeyboardButton("🔙 بازگشت به منو", callback_data="back_to_menu"))
     return markup
@@ -97,8 +153,16 @@ def products_menu():
 def specific_products_menu():
     markup = InlineKeyboardMarkup(row_width=1)
     for product_id, product in products.items():
-        if product_id in ["raki", "banana", "apple"]:  # فقط محصولات خاص
+        if product_id in ["raki", "banana", "apple", "liquor_orange", "liquor_cherry", "liquor_pineapple"]:  # محصولات خاص
             markup.add(InlineKeyboardButton(f"🌿 {product['name']} - {product['price']:,} تومان (موجودی انبار: {product['stock']})", callback_data=f"select_{product_id}"))
+    markup.add(InlineKeyboardButton("🔙 بازگشت به منو", callback_data="back_to_menu"))
+    return markup
+
+# منوی توضیحات محصولات
+def descriptions_menu():
+    markup = InlineKeyboardMarkup(row_width=1)
+    for product_id in product_descriptions.keys():
+        markup.add(InlineKeyboardButton(f"📖 {products[product_id]['name']}", callback_data=f"desc_{product_id}"))
     markup.add(InlineKeyboardButton("🔙 بازگشت به منو", callback_data="back_to_menu"))
     return markup
 
@@ -230,6 +294,18 @@ def callback_query(call):
             show_invoice(chat_id)
         elif call.data == "back_to_menu":
             bot.send_message(chat_id, "📜 منوی اصلی:", reply_markup=main_menu())
+        elif call.data == "show_descriptions":
+            bot.send_message(chat_id, "📖 توضیحات محصولات:\nلطفاً محصول مورد نظرت رو انتخاب کن:", reply_markup=descriptions_menu())
+        elif call.data.startswith("desc_"):
+            product_id = call.data.split("_")[1]
+            description = product_descriptions[product_id]["description"]
+            image_path = product_descriptions[product_id]["image"]
+            try:
+                with open(image_path, "rb") as photo:
+                    bot.send_photo(chat_id, photo, caption=description, reply_markup=back_to_menu(), parse_mode="HTML")
+            except FileNotFoundError:
+                bot.send_message(chat_id, description, reply_markup=back_to_menu(), parse_mode="HTML")
+                logging.warning(f"عکس {image_path} پیدا نشد!")
         elif call.data.startswith("select_"):
             product_id = call.data.split("_")[1]
             product = products[product_id]
