@@ -221,7 +221,7 @@ def show_invoice(chat_id):
         f"{items_list}\n\n"
         f"💰 مجموع پرداختی: {total:,} تومان\n\n\n"
         f"<b>عزیزان لطفا بعد از پرداخت کارت به کارت عکس فیش رو همینجا ارسال کنید 😎 ممنون از شما😊</b>\n\n\n"
-        f"💳 مبلغ را به همون کارت <code> آخرش بود 2012</code>  قبلی واریز کنید."
+        f"💳 مبلغ رو به همون کارت 2012 قبلی واریز کنید."
     )
     bot.send_message(chat_id, invoice_text, reply_markup=send_receipt_button(), parse_mode="HTML")
 
