@@ -37,7 +37,7 @@ user_entry_type = {}  # نوع ورود (برای آینده)
 
 # محصولات و قیمت‌ها (کشمش و محصولات خاص)
 products = {
-    "keshmesh": {"name": "کشمش", "price": 600000, "stock": 50},  # قیمت کشمش 600,000 تومان
+    "keshmesh": {"name": "کشمش", "price": 600000, "stock": 46},  # قیمت کشمش 600,000 تومان
     "raki": {"name": "راکی (1 لیتر)", "price": 3500000, "stock": 1, "delivery_days": 30},
     "banana": {"name": "موز (1 لیتر)", "price": 2500000, "stock": 1, "delivery_days": 30},
     "apple": {"name": "سیب (1 لیتر)", "price": 2500000, "stock": 1, "delivery_days": 30},
