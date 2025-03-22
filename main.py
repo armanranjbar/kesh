@@ -163,37 +163,62 @@ def show_invoice(chat_id):
 
 # ویرایش سفارش
 def edit_order(chat_id):
+    logging.info(f"تابع edit_order برای chat_id={chat_id} اجرا شد.")
     if chat_id not in user_orders or not user_orders[chat_id]:
         bot.send_message(chat_id, "⛔ سفارشی ثبت نشده!", reply_markup=main_menu())
+        logging.info(f"سفارشی برای chat_id={chat_id} ثبت نشده.")
         return
     markup = InlineKeyboardMarkup()
     for item, count in user_orders[chat_id].items():
-        markup.add(InlineKeyboardButton(f"❌ حذف {products[item]['name']} ({count} عدد)", callback_data=f"remove_{item}"))
+        button_text = f"❌ حذف {products[item]['name']} ({count} عدد)"
+        callback_data = f"remove_{item}"
+        markup.add(InlineKeyboardButton(button_text, callback_data=callback_data))
+        logging.info(f"دکمه حذف برای آیتم {item} با callback_data={callback_data} اضافه شد.")
     markup.add(InlineKeyboardButton("🔙 بازگشت", callback_data="back_to_menu"))
     bot.send_message(chat_id, "📝 موارد قابل حذف:", reply_markup=markup)
+    logging.info(f"پیام 'موارد قابل حذف' برای chat_id={chat_id} ارسال شد.")
 
 # حذف آیتم
 def remove_item(call):
     chat_id = call.message.chat.id
-    item = call.data.split("_", 1)[1]  # استخراج نام آیتم با روش کد قبلی
+    logging.info(f"تابع remove_item برای chat_id={chat_id} اجرا شد. call.data={call.data}")
+    
+    # استخراج نام آیتم
+    item = call.data.split("_", 1)[1]
+    logging.info(f"آیتم استخراج‌شده: {item}")
+    
+    # بررسی وجود آیتم در سفارشات
     if item in user_orders[chat_id]:
+        logging.info(f"آیتم {item} در user_orders[{chat_id}] پیدا شد. در حال حذف...")
         del user_orders[chat_id][item]  # حذف آیتم از سفارشات
         bot.answer_callback_query(call.id, f"❌ {products[item]['name']} حذف شد.")
-    bot.delete_message(chat_id, call.message.message_id)  # حذف پیام قبلی
+        logging.info(f"آیتم {item} با موفقیت حذف شد.")
+    else:
+        bot.answer_callback_query(call.id, "⚠️ آیتم یافت نشد!")
+        logging.warning(f"آیتم {item} در user_orders[{chat_id}] پیدا نشد.")
+        return
+    
+    # حذف پیام قبلی
+    bot.delete_message(chat_id, call.message.message_id)
+    logging.info(f"پیام قبلی با message_id={call.message.message_id} حذف شد.")
+    
+    # ارسال پیام جدید با سفارشات باقی‌مونده
     if user_orders[chat_id]:
         markup = InlineKeyboardMarkup()
         for remaining_item, remaining_count in user_orders[chat_id].items():
             markup.add(InlineKeyboardButton(f"❌ حذف {products[remaining_item]['name']} ({remaining_count} عدد)", callback_data=f"remove_{remaining_item}"))
         markup.add(InlineKeyboardButton("🔙 بازگشت", callback_data="back_to_menu"))
         bot.send_message(chat_id, "📝 موارد باقی‌مونده:", reply_markup=markup)
+        logging.info(f"پیام 'موارد باقی‌مونده' برای chat_id={chat_id} ارسال شد.")
     else:
         bot.send_message(chat_id, "⛔ همه سفارشات حذف شدند!", reply_markup=back_to_menu())
+        logging.info(f"پیام 'همه سفارشات حذف شدند' برای chat_id={chat_id} ارسال شد.")
 
 # مدیریت دکمه‌ها
 @bot.callback_query_handler(func=lambda call: True)
 def callback_query(call):
     chat_id = call.message.chat.id
-    logging.info(f"دکمه زده شد: {call.data}")
+    logging.info(f"دکمه زده شد: call.data={call.data}")
     try:
         if call.data == "show_products":
             bot.send_message(chat_id, "🌿 محصولات موجود:\nلطفاً محصول مورد نظرت رو انتخاب کن:", reply_markup=products_menu())
@@ -212,6 +237,9 @@ def callback_query(call):
             bot.register_next_step_handler(call.message, lambda msg: handle_quantity(msg, product_id))
         elif call.data == "send_receipt":
             bot.send_message(chat_id, "📤 لطفا عکس فیش رو بفرست همینجا و منتظر بمون 😎")
+        elif call.data.startswith("remove_"):
+            logging.info(f"دکمه حذف شناسایی شد: call.data={call.data}")
+            remove_item(call)
         elif call.data.startswith("approve_") or call.data.startswith("reject_"):
             admin_id = call.message.chat.id
             if admin_id != ADMIN_ID:
@@ -238,8 +266,10 @@ def callback_query(call):
                 bot.send_message(ADMIN_ID, f"❌ پرداخت {username} رد شد.")
                 bot.answer_callback_query(call.id, "❌ پرداخت رد شد!")
             bot.edit_message_reply_markup(ADMIN_ID, call.message.message_id, reply_markup=None)
+        else:
+            logging.warning(f"دکمه ناشناخته: call.data={call.data}")
     except Exception as e:
-        logging.error(f"خطا: {e}")
+        logging.error(f"خطا در callback_query: {e}")
         bot.send_message(chat_id, "⚠️ مشکل پیش اومد، دوباره امتحان کن!")
 
 # مدیریت تعداد انتخاب‌شده
