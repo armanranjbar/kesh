@@ -297,7 +297,7 @@ def callback_query(call):
         elif call.data == "show_descriptions":
             bot.send_message(chat_id, "📖 توضیحات محصولات:\nلطفاً محصول مورد نظرت رو انتخاب کن:", reply_markup=descriptions_menu())
         elif call.data.startswith("desc_"):
-            product_id = call.data.split("_")[1]
+            product_id = call.data.split("_", 1)[1]
             description = product_descriptions[product_id]["description"]
             image_path = product_descriptions[product_id]["image"]
             try:
@@ -307,7 +307,7 @@ def callback_query(call):
                 bot.send_message(chat_id, description, reply_markup=back_to_menu(), parse_mode="HTML")
                 logging.warning(f"عکس {image_path} پیدا نشد!")
         elif call.data.startswith("select_"):
-            product_id = call.data.split("_")[1]
+            product_id = call.data.split("_", 1)[1]
             product = products[product_id]
             bot.send_message(chat_id, f"🌿 {product['name']} - موجودی: {product['stock']}\nلطفاً تعداد مورد نظرت رو به صورت عدد وارد کن (مثلاً 10):", reply_markup=ReplyKeyboardRemove())
             bot.register_next_step_handler(call.message, lambda msg: handle_quantity(msg, product_id))
