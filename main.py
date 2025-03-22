@@ -175,27 +175,19 @@ def edit_order(chat_id):
 # حذف آیتم
 def remove_item(call):
     chat_id = call.message.chat.id
-    try:
-        item = call.data.split("_")[1]  # استخراج نام آیتم
-        if chat_id in user_orders and item in user_orders[chat_id]:
-            del user_orders[chat_id][item]  # حذف آیتم از سفارشات
-            bot.answer_callback_query(call.id, f"❌ {products[item]['name']} با موفقیت حذف شد.")
-            # حذف پیام قبلی
-            bot.delete_message(chat_id, call.message.message_id)
-            # ارسال پیام جدید با سفارشات باقی‌مونده
-            if user_orders[chat_id]:
-                markup = InlineKeyboardMarkup()
-                for remaining_item, remaining_count in user_orders[chat_id].items():
-                    markup.add(InlineKeyboardButton(f"❌ حذف {products[remaining_item]['name']} ({remaining_count} عدد)", callback_data=f"remove_{remaining_item}"))
-                markup.add(InlineKeyboardButton("🔙 بازگشت", callback_data="back_to_menu"))
-                bot.send_message(chat_id, "📝 موارد باقی‌مونده:", reply_markup=markup)
-            else:
-                bot.send_message(chat_id, "⛔ همه سفارشات حذف شدند!", reply_markup=back_to_menu())
-        else:
-            bot.answer_callback_query(call.id, "⚠️ آیتم یافت نشد!")
-    except Exception as e:
-        bot.answer_callback_query(call.id, "⚠️ خطایی رخ داد! دوباره امتحان کن.")
-        logging.error(f"خطا در حذف آیتم: {e}")
+    item = call.data.split("_", 1)[1]  # استخراج نام آیتم با روش کد قبلی
+    if item in user_orders[chat_id]:
+        del user_orders[chat_id][item]  # حذف آیتم از سفارشات
+        bot.answer_callback_query(call.id, f"❌ {products[item]['name']} حذف شد.")
+    bot.delete_message(chat_id, call.message.message_id)  # حذف پیام قبلی
+    if user_orders[chat_id]:
+        markup = InlineKeyboardMarkup()
+        for remaining_item, remaining_count in user_orders[chat_id].items():
+            markup.add(InlineKeyboardButton(f"❌ حذف {products[remaining_item]['name']} ({remaining_count} عدد)", callback_data=f"remove_{remaining_item}"))
+        markup.add(InlineKeyboardButton("🔙 بازگشت", callback_data="back_to_menu"))
+        bot.send_message(chat_id, "📝 موارد باقی‌مونده:", reply_markup=markup)
+    else:
+        bot.send_message(chat_id, "⛔ همه سفارشات حذف شدند!", reply_markup=back_to_menu())
 
 # مدیریت دکمه‌ها
 @bot.callback_query_handler(func=lambda call: True)
